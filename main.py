@@ -17,21 +17,13 @@ def main():
         os.chdir(os.getcwd())
     # 모델 학습 or 가져오기
     model_path = "./LOL_pred_model"
-
-    if os.path.isfile(model_path):
-        model = ml.get_train_model(model_path)
-    else:
-        print("학습된 모델이 없기에 학습합니다.")
-        # 파일 경로
-
-        file_path = './match_data.csv'
-
-        # 데이터 불러오기 및 준비
-        data = ml.load_and_prepare_data(file_path)
-
-        ml.train_model(data)
-        model = ml.get_train_model(model_path)
     try:
+        if os.path.isfile(model_path):
+            model = ml.get_train_model(model_path)
+        else:
+            print("학습된 모델이 누락되었습니다. 다시 설치해주시기 바랍니다.")
+            raise Exception()
+
         # 블루팀과 퍼플팀의 통계 입력 (사용자 입력 받기)
         match_stats = ml.get_team_stats()
         # match_stats = [33000, 1, 5, 9, 59, 37600, 4, 6, 14, 59, 1312]
@@ -41,6 +33,8 @@ def main():
         ml.predict_win_rate(model, match_stats)
 
         # realtime_data(api_key)
+    except ValueError:
+        print("입력값이 잘못되었습니다, 다시 실행해주시기 바랍니다.")
     except KeyboardInterrupt:
         print("강제종료")
     finally:
